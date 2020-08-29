@@ -1,7 +1,7 @@
-const test = require("./test/test");
+const sender = require("./sendMail.js");
 
 // Gestion des routes du serveur backend
 module.exports = function (expressServer) {
-  //Test
-  expressServer.get("/test", test.test);
+  //Envoie d'e-mail
+  expressServer.post("/sendAMail", sender.sendMeAMail);
 };

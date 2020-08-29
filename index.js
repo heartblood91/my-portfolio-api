@@ -6,6 +6,7 @@ const http = require("http");
 const cors = require("cors");
 const compression = require("compression");
 const helmet = require("helmet");
+const bodyParser = require("body-parser");
 
 // Récupère les informations sensibles
 require("dotenv").config();
@@ -24,6 +25,7 @@ expressServer.use(helmet());
 
 // Permet au serveur d'utiliser des extensions (morgan pour les api + de parser le json + les cors)
 expressServer.use(morgan("combined"));
+expressServer.use(bodyParser.json({ type: "*/*" }));
 expressServer.use(cors());
 
 // Créer le serveur
