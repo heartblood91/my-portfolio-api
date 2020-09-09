@@ -30,56 +30,74 @@ const sender = (email, subject, message, messageHTML) => {
 };
 
 module.exports.sendMeAMail = (req, res, next) => {
-  // Etape 0: Je récupère les informations
-  // Récupération des variables contenues dans le body
-  const { email, name, firstname, message, tel } = req.body;
+  // Etape 0: Je récupère et nettoie les informations
 
-  // Etape 1: Je prépare le 1er email (la transmission du message du client)
-  // Création du sujet du email
-  let subject = "De la part de " + firstname + " " + name + " sur votre CV";
+  // Copie du body
+  const newBody = Object.assign({}, req.body);
 
-  // Corps du email
-  let messageAutoWithoutHTML =
-    "Cédric, \n\nJe vous fais parvenir un message avec les informations suivantes depuis votre CV en ligne: \n" +
-    "\nPrénom: " +
-    firstname +
-    "\nNom: " +
-    name +
-    "\nEmail: " +
-    email +
-    "\nTéléphone: " +
-    tel +
-    "\n\nMessage:\n\n" +
-    message;
+  // On vérifie l'existance d'injection de code + nettoyage
+  for (val in req.body) {
+    newBody[val] = req.body[val].replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
 
-  //Transforme le texte simple en texte html
-  let messageAutoWithHTML = messageAutoWithoutHTML.replace(/\n/g, "<br>");
+  // On récupère les élements du nouveau body
+  const { email, name, firstname, message, tel } = newBody;
 
-  // 1ère étape, je m'envoie un email avec les informations contenues dans le formulaire
-  sender(
-    process.env.CV_Mail_To,
-    subject,
-    messageAutoWithoutHTML,
-    messageAutoWithHTML
-  )
-    .then((resultat) => res.status(200).send(resultat))
-    .catch((err) => res.status(400).send(err));
+  // Verification mail
+  const regexMail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const verifyMail = regexMail.test(email);
 
-  // Etape 2: Je prépare le second email (accusé récéption pour le client)
-  // Création du sujet du email
-  subject = "Merci " + firstname + " pour votre message!";
+  // Etape 1: Si la boite mail est valide on continue, sinon on arrête en on transmet un message d'erreur:
+  if (verifyMail) {
+    // Etape 1: Je prépare le 1er email (la transmission du message du client)
+    // Création du sujet du email
+    let subject = "De la part de " + firstname + " " + name + " sur votre CV";
 
-  // Création du message du email
-  messageAutoWithoutHTML =
-    "Cher/Chère " +
-    firstname +
-    "\n\nTout d'abord, merci pour votre message sur mon CV Web. \n\nJe vais le lire attentivement, je ne manquerai pas de vous faire un retour dès que possible! \n\nCordialement, \nCédric";
+    // Corps du email
+    let messageAutoWithoutHTML =
+      "Cédric, \n\nJe vous fais parvenir un message avec les informations suivantes depuis votre CV en ligne: \n" +
+      "\nPrénom: " +
+      firstname +
+      "\nNom: " +
+      name +
+      "\nEmail: " +
+      email +
+      "\nTéléphone: " +
+      tel +
+      "\n\nMessage:\n\n" +
+      message;
 
-  //Transforme le texte simple en texte html
-  messageAutoWithHTML = messageAutoWithoutHTML.replace(/\n/g, "<br>");
+    //Transforme le texte simple en texte html
+    let messageAutoWithHTML = messageAutoWithoutHTML.replace(/\n/g, "<br>");
 
-  //2e etape, j'envoie une email type accusé de récéption au client
-  sender(email, subject, messageAutoWithoutHTML, messageAutoWithHTML)
-    .then((resultat) => console.log(resultat))
-    .catch((err) => console.log(err));
+    // 1ère étape, je m'envoie un email avec les informations contenues dans le formulaire
+    sender(
+      process.env.CV_Mail_To,
+      subject,
+      messageAutoWithoutHTML,
+      messageAutoWithHTML
+    )
+      .then((resultat) => res.status(200).send(resultat))
+      .catch((err) => res.status(400).send(err));
+
+    // Etape 2: Je prépare le second email (accusé récéption pour le client)
+    // Création du sujet du email
+    subject = "Merci " + firstname + " pour votre message!";
+
+    // Création du message du email
+    messageAutoWithoutHTML =
+      "Cher/Chère " +
+      firstname +
+      "\n\nTout d'abord, merci pour votre message sur mon CV Web. \n\nJe vais le lire attentivement, je ne manquerai pas de vous faire un retour dès que possible! \n\nCordialement, \nCédric";
+
+    //Transforme le texte simple en texte html
+    messageAutoWithHTML = messageAutoWithoutHTML.replace(/\n/g, "<br>");
+
+    //2e etape, j'envoie une email type accusé de récéption au client
+    sender(email, subject, messageAutoWithoutHTML, messageAutoWithHTML)
+      .then((resultat) => console.log(resultat))
+      .catch((err) => console.log(err));
+  } else {
+    res.status(400).send("adresse mail non valide");
+  }
 };
