@@ -85,10 +85,6 @@ $ npm i
 
 Il s'agit juste d'une liste des packages utilisées et de mes raisons:
 
-- React (La BASE pour une appplication en React) -->[https://fr.reactjs.org/](https://fr.reactjs.org/)
-- React Tooltip (Pour faire de beau tooltip sans se prendre la tête...) --> [https://github.com/react-native-community/react-native-maps](https://github.com/react-native-community/react-native-maps)
-- Axios (pour la requête post sur le serveur API) --> [https://github.com/axios/axios](https://github.com/axios/axios)
-
 - Express.js (Permet de construire le serveur) --> https://expressjs.com/fr/
 - Cors (Pour éviter les conflits de nom de domaine) --> https://github.com/expressjs/cors
 - Compression (Reduit la taille de la réponse) --> https://github.com/expressjs/compression
