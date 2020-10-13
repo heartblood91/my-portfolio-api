@@ -6,8 +6,8 @@
 
 - [Description](#description)
 - [En live](#enlive)
-- [Installation partie -> backend (API)](#installationAPI)
-- [Installation partie -> front](#installationFront)
+- [Installation partie -> Backend (API)](#installation-api)
+- [Installation partie -> Front](#installation-front)
 - [Package](#package)
 - [Confidentialité](#confidentialité)
 - [Merci](#merci)
@@ -30,7 +30,7 @@ Faîtes un tour sur mon portfolio en ligne pour vous donner une idée du concept
 
 <br>
 
- <section id="installationAPI">
+ <section id="installation-api">
 
 ## Installation du serveur API
 
@@ -65,7 +65,7 @@ $ npm run prod
 
 Si vous souhaitez tester la bonne configuration frontend - backend sur la rubrique contact, vous pouvez remplir le formulaire.
 
- <section id="installationFront">
+ <section id="installation-front">
 
 ## Installation du Front End
 
